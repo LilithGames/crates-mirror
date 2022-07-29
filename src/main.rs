@@ -58,6 +58,7 @@ struct Config {
     remote_api: String,
     listen_on: String,
     registry_config: GitConfig,
+    advertising_ip: Option<String>,
     poll_intervall: Option<i32>,
 }
 
@@ -295,7 +296,11 @@ fn main() {
     if !base_dir.exists() {
         create_dir_all(base_dir.clone()).unwrap();
     }
-    let url: &str = &config.listen_on.clone();
+    // let url: &str = &config.listen_on.clone();
+    let url: &str = &match &config.advertising_ip {
+        None => &config.listen_on,
+        Some(x) => &x,
+    }.clone();
     base_dir.push("index");
     let repo = if !base_dir.exists() {
         let repo =
